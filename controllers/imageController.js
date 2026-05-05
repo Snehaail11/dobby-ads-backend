@@ -30,23 +30,13 @@ exports.uploadImage = async (req, res) => {
       return res.status(400).json({ message: 'No image file provided' });
     }
     
-    // Handle folderId - convert "null" string to actual null
+    // Handle folderId
     let actualFolderId = null;
     if (folderId && folderId !== 'null' && folderId !== 'undefined' && folderId !== '') {
       actualFolderId = folderId;
     }
     
-    // Allow root-level upload if no folderId provided
-    if (!actualFolderId) {
-      // Create a Root folder if doesn't exist
-      let rootFolder = await Folder.findOne({ name: 'Root', owner: userId });
-      if (!rootFolder) {
-        rootFolder = new Folder({ name: 'Root', owner: userId, parentFolder: null });
-        await rootFolder.save();
-      }
-      actualFolderId = rootFolder._id;
-    }
-    
+    // If folderId provided, verify it exists
     if (actualFolderId) {
       const folder = await Folder.findOne({ _id: actualFolderId, owner: userId });
       if (!folder) {
