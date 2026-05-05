@@ -23,6 +23,13 @@ A full-stack image management application with folder organization, secure authe
 - **Lightbox** - Full-screen image viewing
 - **Loading States** - Visual feedback during operations
 - **Error Handling** - Toast notifications for errors
+- **AI Chat Assistant** - Built-in AI for natural language commands
+
+### AI Chat (In-App)
+- **Natural Language** - Type commands in plain English
+- **Easy Access** - Click 🤖 AI button in header
+- **Commands** - Create folders, list files, delete items
+- **Real-time** - Executes immediately via API
 
 ### MCP Server (Claude Desktop)
 - **AI Integration** - Natural language folder management
@@ -86,7 +93,21 @@ Frontend runs at `http://localhost:3000`
 
 ## 🤖 MCP Integration
 
-### Claude Desktop Setup
+## 🤖 AI Integration
+
+### Option 1: In-App AI Chat (Recommended)
+
+Open the app and click the **🤖 AI** button in the header to open the chat assistant.
+
+**Available Commands:**
+| Command | Example |
+|---------|---------|
+| Create folder | "Create folder Marketing" |
+| List folders | "List folders" |
+| Delete folder | "Delete folder Old" |
+| Show images | "Show images in [folder]" |
+
+### Option 2: MCP Server (Claude Desktop)
 
 Add to `%APPDATA%\Claude\mcp.json`:
 
@@ -95,13 +116,21 @@ Add to `%APPDATA%\Claude\mcp.json`:
   "mcpServers": {
     "dobby-ads": {
       "command": "node",
-      "args": ["path/to/dobby-ads-backend/index.js"],
+      "args": ["path/to/dobby-ads-backend/index.mjs"],
       "env": {
-        "DOBBY_API_URL": "https://your-backend.onrender.com/api"
+        "DOBBY_API_URL": "https://dobby-ads-backend-fu75.onrender.com/api"
       }
     }
   }
 }
+```
+
+### Terminal MCP
+
+Run locally:
+```bash
+cd dobby-ads-backend
+npm run mcp
 ```
 
 ### Available Tools
