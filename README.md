@@ -204,7 +204,3 @@ docker-compose up -d
 - Express.js 5.x + MongoDB + JWT + Supabase
 - React 19 + Axios + React Router
 - @modelcontextprotocol/sdk
-
-## 📄 License
-
-ISC - Dobby Ads Team
