@@ -7,7 +7,19 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
-app.use(cors());
+// Configure CORS to allow your frontend domains
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://dobby-ads-frontend.vercel.app',
+    'https://dobby-ads-frontend-git-main-snehailtalentcorner-4594s-projects.vercel.app',
+    'https://*.vercel.app'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Environment check
