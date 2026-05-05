@@ -207,8 +207,4 @@ docker-compose up -d
 
 ## 📄 License
 
-ISC License
-
----
-
-Built with ❤️ by Dobby Ads Team
+ISC - Dobby Ads Team
