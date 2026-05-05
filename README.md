@@ -208,3 +208,10 @@ docker-compose up -d
 ## 📄 License
 
 ISC - Dobby Ads Team
+
+## 🔗 Links
+
+- **Live App**: https://dobby-ads-frontend.vercel.app
+- **Frontend GitHub**: https://github.com/Snehaail11/dobby-ads-frontend
+- **Backend GitHub**: https://github.com/Snehaail11/dobby-ads-backend
+- **API**: https://dobby-ads-backend-fu75.onrender.com/api
