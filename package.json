@@ -2,7 +2,6 @@
   "name": "dobby-ads-backend",
   "version": "1.0.0",
   "description": "Dobby Ads - Image Management API",
-  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
