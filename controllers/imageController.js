@@ -53,7 +53,8 @@ exports.uploadImage = async (req, res) => {
     // Generate unique filename
     const fileExt = path.extname(req.file.originalname);
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}${fileExt}`;
-    const filePath = `user-${userId}/${actualFolderId}/${fileName}`;
+    const uploadFolder = actualFolderId || 'root';
+    const filePath = `user-${userId}/${uploadFolder}/${fileName}`;
     
     // Upload to Supabase
     const { error: uploadError } = await supabase.storage
