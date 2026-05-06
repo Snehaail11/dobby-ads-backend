@@ -42,40 +42,56 @@ api.interceptors.request.use((config) => {
 });
 
 const tools = [
-  { name: 'list_folders', description: 'List all folders' },
-  { name: 'create_folder', description: 'Create a folder' },
-  { name: 'list_images', description: 'List images in folder' },
-  { name: 'get_folder_size', description: 'Get folder size' }
+  { name: 'list_folders', description: 'List all folders', inputSchema: { type: 'object', properties: {} } },
+  { name: 'create_folder', description: 'Create a folder', inputSchema: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'] } },
+  { name: 'delete_folder', description: 'Delete a folder by name', inputSchema: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'] } },
+  { name: 'list_images', description: 'List images in folder', inputSchema: { type: 'object', properties: { folderId: { type: 'string' } }, required: ['folderId'] } },
+  { name: 'get_folder_size', description: 'Get folder size', inputSchema: { type: 'object', properties: { folderId: { type: 'string' } }, required: ['folderId'] } }
 ];
+
+async function findFolderByName(name) {
+  const response = await api.get('/folders', { params: { parentFolderId: null } });
+  const folders = response.data.folders || [];
+  return folders.find(f => f.name.toLowerCase() === name.toLowerCase());
+}
 
 async function handleTool(name, args) {
   try {
     switch (name) {
       case 'list_folders': {
         const response = await api.get('/folders', { params: { parentFolderId: null } });
-        return { content: [{ type: 'text', text: JSON.stringify(response.data.folders || []) }] };
+        const folders = response.data.folders || [];
+        if (folders.length === 0) return { content: [{ type: 'text', text: 'No folders found' }] };
+        return { content: [{ type: 'text', text: folders.map(f => `📁 ${f.name} (ID: ${f.id})`).join('\n') }] };
       }
       case 'create_folder': {
         const response = await api.post('/folders', { name: args.name });
-        return { content: [{ type: 'text', text: `Created: ${response.data.folder?.name}` }] };
+        return { content: [{ type: 'text', text: `✅ Created folder "${args.name}"` }] };
+      }
+      case 'delete_folder': {
+        const folder = await findFolderByName(args.name);
+        if (!folder) return { content: [{ type: 'text', text: `❌ Folder "${args.name}" not found` }] };
+        await api.delete(`/folders/${folder.id}`);
+        return { content: [{ type: 'text', text: `✅ Deleted folder "${args.name}"` }] };
       }
       case 'list_images': {
         const response = await api.get(`/images/folder/${args.folderId}`);
-        return { content: [{ type: 'text', text: JSON.stringify(response.data.images || []) }] };
+        const images = response.data.images || [];
+        if (images.length === 0) return { content: [{ type: 'text', text: 'No images found' }] };
+        return { content: [{ type: 'text', text: images.map(img => `🖼️ ${img.name} (${img.sizeFormatted})`).join('\n') }] };
       }
       case 'get_folder_size': {
         const response = await api.get(`/folders/${args.folderId}/size`);
-        return { content: [{ type: 'text', text: response.data.sizeFormatted }] };
+        return { content: [{ type: 'text', text: `📊 Size: ${response.data.sizeFormatted}` }] };
       }
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
   } catch (error) {
-    return { content: [{ type: 'text', text: `Error: ${error.response?.data?.message || error.message}` }] };
+    return { content: [{ type: 'text', text: `❌ ${error.response?.data?.message || error.message}` }] };
   }
 }
 
-// Simple JSON-RPC over STDIO
 process.stdin.on('data', async (buffer) => {
   const lines = buffer.toString().split('\n').filter(l => l.trim());
   for (const line of lines) {
